@@ -67,17 +67,20 @@ func isDigit(c byte) bool {
 
 func parseString() string {
 	sb := strings.Builder{}
+	// 跳过 "
 	index++
 	for json[index] != '"' {
 		sb.WriteByte(json[index])
 		index++
 	}
+	// 跳过 "
 	index++
 	return sb.String()
 }
 
 func parseArray() interface{} {
 	list := make([]interface{}, 0)
+	// 跳过 [
 	index++
 
 	if json[index] == ']' {
@@ -102,10 +105,12 @@ func parseArray() interface{} {
 
 func parseObject() map[string]interface{} {
 	m := make(map[string]interface{})
+	// 跳过 {
 	index++
 
 	// 处理空对象
 	if index < len(json) && json[index] == '}' {
+		// 跳过 }
 		index++
 		return m
 	}
@@ -126,6 +131,7 @@ func parseObject() map[string]interface{} {
 		}
 
 		if json[index] == '}' {
+			// 跳过 }
 			index++
 			return m
 		}
