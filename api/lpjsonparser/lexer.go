@@ -5,6 +5,7 @@ import (
 	"unicode"
 )
 
+// rune
 type lexer struct {
 	input    []rune // 改用 rune 切片存储字符
 	position int
@@ -26,6 +27,7 @@ func (l *lexer) readChar() {
 	l.position++
 }
 
+// NextToken is the core func
 func (l *lexer) NextToken() Token {
 	l.skipWhitespace()
 
@@ -45,8 +47,6 @@ func (l *lexer) NextToken() Token {
 		tok = Token{COLON, string(l.ch)}
 	case '"':
 		tok = Token{STRING, l.readString()}
-		l.readChar()
-		return tok
 	case 0: // EOF
 		return Token{EOF, ""}
 	default:
@@ -108,5 +108,7 @@ func (l *lexer) readString() string {
 		}
 		l.readChar()
 	}
+	// 跳过结束的引号
+	l.readChar()
 	return sb.String()
 }
