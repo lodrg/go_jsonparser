@@ -12,6 +12,15 @@ type lexer struct {
 	ch       rune // 改用 rune 存储当前字符
 }
 
+var SingleCharTokens = map[rune]TokenType{
+	'{': LEFT_BRACKET,
+	'}': RIGHT_BRACKET,
+	'[': LEFT_BRACKET,
+	']': RIGHT_BRACKET,
+	',': COMMA,
+	';': COLON,
+}
+
 func NewLexer(input string) *lexer {
 	l := &lexer{input: []rune(input)}
 	l.readChar()
@@ -30,29 +39,24 @@ func (l *lexer) readChar() {
 // NextToken is the core func
 func (l *lexer) NextToken() Token {
 	l.skipWhitespace()
-
 	var tok Token
-	switch l.ch {
-	case '{':
-		tok = Token{LEFT_BRACE, string(l.ch)}
-	case '}':
-		tok = Token{RIGHT_BRACE, string(l.ch)}
-	case '[':
-		tok = Token{LEFT_BRACKET, string(l.ch)}
-	case ']':
-		tok = Token{RIGHT_BRACKET, string(l.ch)}
-	case ',':
-		tok = Token{COMMA, string(l.ch)}
-	case ':':
-		tok = Token{COLON, string(l.ch)}
-	case '"':
-		tok = Token{STRING, l.readString()}
-	case 0: // EOF
+
+	if l.ch == 0 {
 		return Token{EOF, ""}
+	}
+
+	if tokenType, ok := SingleCharTokens[l.ch]; ok {
+		tok = Token{Type: tokenType}
+		l.readChar()
+		return tok
+	}
+
+	switch {
+	case l.ch == '"':
+		tok = Token{STRING, l.readString()}
+	case isDigit(l.ch):
+		tok = Token{NUMBER, l.readNumber()}
 	default:
-		if isDigit(l.ch) {
-			return Token{NUMBER, l.readNumber()}
-		}
 		tok = Token{ILLEGAL, string(l.ch)}
 	}
 
