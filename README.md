@@ -1,1 +1,1 @@
-An go json parser, it can parse the  jsojson file and return the data in the json.
+An go json parser, it can parse the  json string and return the data in map.
