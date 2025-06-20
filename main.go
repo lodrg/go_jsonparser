@@ -5,6 +5,9 @@ import (
 	"sync"
 )
 
+/*
+use waitGroup to make main thread wait sub thread
+*/
 func main() {
 	var wg sync.WaitGroup
 
@@ -13,6 +16,7 @@ func main() {
 	b := make([]int, 0, 4)
 
 	for i := 1; i < len(a); i++ {
+		// this is another line
 		wg.Add(1)
 		go func(x, y int) {
 			defer wg.Done()
